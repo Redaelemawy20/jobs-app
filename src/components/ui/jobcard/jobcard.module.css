@@ -1,0 +1,26 @@
+.cardjob_Container {
+  padding: 2em 2em 1em 2em;
+  background-color: #fff;
+}
+.jobTitle {
+  margin-bottom: 1em;
+}
+.skillsTitle {
+  margin-bottom: 1em;
+}
+.skillsItemsContainer {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  margin-bottom: 1em;
+}
+.skillItem {
+  padding: 0.5em;
+  border-radius: 8px;
+  background-color: #ddd;
+  width: fit-content;
+}
+.viewDetails {
+  color: black;
+  text-decoration: underline;
+}

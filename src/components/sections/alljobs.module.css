@@ -1,0 +1,16 @@
+.allJobs_Container {
+  padding: 2em 0;
+}
+.mainTitle {
+  margin-bottom: 1.5em;
+}
+.jobsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2em;
+}
+@media (max-width: 680px) {
+  .jobsContainer {
+    grid-template-columns: 1fr;
+  }
+}
