@@ -1,18 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import Nav from "./components/ui/nav/Nav";
-import { BrowserRouter } from "react-router-dom";
-
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import store from './store/store';
+import { loadJobs } from './store/jobs';
+store.dispatch(loadJobs());
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Nav />
-      <App />
-    </BrowserRouter>
+    <App />
   </React.StrictMode>
 );
