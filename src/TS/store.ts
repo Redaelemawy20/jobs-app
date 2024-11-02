@@ -14,6 +14,8 @@ interface SliceState<T> {
 }
 export interface JobsState extends SliceState<Job> {
   loading: boolean;
-  error: boolean;
+  error: false | string;
+  totalJobs: number;
+  cursor: number;
 }
-export interface SkillsState extends SliceState<Skill> {}
+export interface SkillsState extends SliceState<Skill | 'loading'> {}

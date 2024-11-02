@@ -1,0 +1,31 @@
+.aside_container {
+  margin-inline-start: 1em;
+  padding: 1.5em 1em 3em 1.5em;
+  background-color: #eee;
+  height: fit-content;
+}
+.unList {
+  display: flex;
+  flex-direction: column;
+  list-style: disc;
+  list-style-position: inside;
+  gap: 0.5em;
+}
+.unList_Title {
+  width: 100%;
+}
+.unList li {
+  width: 100%;
+  padding-inline-start: 1em;
+  padding: 0.4em;
+}
+.unList li a {
+  color: black;
+  text-decoration: underline;
+  padding: 0.4em 0;
+}
+@media (max-width: 680px) {
+  .aside_container {
+    margin: 0 0 1em 0;
+  }
+}

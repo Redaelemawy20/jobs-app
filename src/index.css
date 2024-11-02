@@ -28,3 +28,17 @@ a {
   width: 94%;
   margin: auto;
 }
+.mainTitle {
+  padding: 1em 0 1em 0;
+}
+
+.common_grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2em;
+}
+@media (max-width: 680px) {
+  .common_grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,10 +1,21 @@
-import { Action, createSlice, Dispatch, GetState } from '@reduxjs/toolkit';
+import {
+  Action,
+  createSlice,
+  Dispatch,
+  GetState,
+  PayloadAction,
+} from '@reduxjs/toolkit';
+import { createSelector } from 'reselect';
 import { apiCall } from './middleware/api';
 import { JobsState } from '../TS/store';
+import { JobsResponse } from '../TS/api';
+import { RootState } from './store';
 
 const intialState: JobsState = {
   byId: {},
   allIds: [],
+  totalJobs: -1, // intial load
+  cursor: 0,
   loading: false,
   error: false,
 };
@@ -16,25 +27,29 @@ const jobSlice = createSlice({
       jobs.loading = true;
       jobs.error = false;
     },
-    jobsReceived: (jobs, action) => {
-      console.log('job recived ');
+    jobsReceived: (jobs, action: PayloadAction<JobsResponse>) => {
+      console.log('jobs loaded');
+
       let payloadJobs = action.payload.data.jobs;
       jobs.loading = false;
       // Normalize jobs data
-      const jobsById = payloadJobs.reduce((acc: typeof jobs.byId, job: any) => {
-        acc[job.id] = job;
+      const jobsById = payloadJobs.reduce((acc, job) => {
+        acc[job.id] = {
+          title: job.attributes.title,
+          skills: job.relationships.skills,
+        };
         return acc;
       }, jobs.byId);
-      console.log(jobsById);
-
       const jobIds = payloadJobs.map((job: any) => job.id);
       // Update state
       jobs.byId = jobsById;
-      jobs.allIds = jobIds;
+      jobs.allIds = jobs.allIds.concat(jobIds);
+      jobs.totalJobs = action.payload.data.meta.count;
+      jobs.cursor = action.payload.data.meta.next;
     },
-    jobsRequestFailed: (jobs) => {
+    jobsRequestFailed: (jobs, action: PayloadAction<{ message: string }>) => {
       jobs.loading = false;
-      jobs.error = true;
+      jobs.error = action.payload.message;
     },
   },
 });
@@ -45,13 +60,26 @@ export default jobSlice.reducer;
 // Action Creators
 const jobsURL = '/jobs';
 export const loadJobs =
-  () => (dispatch: Dispatch<Action>, getState: GetState<[]>) => {
+  () => (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    console.log({ cursor: getState().jobs.cursor });
+
     dispatch(
       apiCall({
-        url: jobsURL,
-        onStartActionType: jobsRequested.type,
-        onSuccessActionType: jobsReceived.type,
-        onFaildActionType: jobsRequestFailed.type,
+        url: jobsURL + `?cursor=${getState().jobs.cursor}`,
+        onStartAction: { type: jobsRequested.type },
+        onSuccessAction: { type: jobsReceived.type },
+        onFailedAction: { type: jobsRequestFailed.type },
       })
     );
   };
+
+// Selectors
+export const hasNext = createSelector(
+  (state: RootState) => state.jobs,
+  (jobs) => jobs.totalJobs > jobs.allIds.length || jobs.totalJobs == -1
+);
+
+export const errorLoadingJobs = createSelector(
+  (state: RootState) => state.jobs.error,
+  (error) => (error ? error : '')
+);

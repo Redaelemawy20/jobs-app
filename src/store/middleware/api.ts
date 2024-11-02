@@ -1,14 +1,15 @@
 import { MiddlewareAPI, Dispatch, Action } from 'redux';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createAction } from '@reduxjs/toolkit';
+type ActionWithOptionalPayload = PayloadAction<object> | Action;
 type ApiCallPayload = {
   url: string;
   method?: string;
   data?: any;
-  onStartActionType?: string;
-  onSuccessActionType?: string;
-  onFaildActionType?: string;
-  onErrorActionTYpe?: string;
+  onStartAction?: ActionWithOptionalPayload;
+  onSuccessAction?: ActionWithOptionalPayload;
+  onFailedAction?: ActionWithOptionalPayload;
+  onErrorAction?: ActionWithOptionalPayload;
 };
 export const apiCall = createAction<ApiCallPayload>('api/call');
 export const apiCallSuccess = createAction<{}>('api/callSuccess');
@@ -24,12 +25,12 @@ const api =
       url,
       method,
       data,
-      onStartActionType,
-      onSuccessActionType,
-      onErrorActionTYpe,
+      onStartAction,
+      onSuccessAction,
+      onFailedAction,
     } = action.payload;
 
-    if (onStartActionType) dispatch({ type: onStartActionType });
+    if (onStartAction) dispatch(onStartAction);
     next(action);
 
     try {
@@ -45,15 +46,33 @@ const api =
       // general success  call ex: if we need to add toast notification
       dispatch(apiCallSuccess(responseData));
       // specific success handler
-      if (onSuccessActionType)
-        dispatch({ type: onSuccessActionType, payload: responseData });
+      if (onSuccessAction) {
+        dispatch(mergePayloads(onSuccessAction, responseData));
+      }
     } catch (error) {
       const errorMessage =
         (error as Error).message || 'An unknown error occurred';
       dispatch(apiCallFailed(errorMessage));
-      if (onErrorActionTYpe)
-        dispatch({ type: onErrorActionTYpe, payload: errorMessage });
+      if (onFailedAction)
+        dispatch(mergePayloads(onFailedAction, { message: errorMessage }));
     }
   };
 
 export default api;
+
+/*
+  helper function to merge intial action payload 
+  with for example the result of  an api call
+  return new action to dispatch
+*/
+function mergePayloads(action: ActionWithOptionalPayload, data: {}) {
+  return {
+    type: action.type,
+    payload: {
+      ...data,
+      ...('payload' in action // if there is payload merge it with response data
+        ? action.payload
+        : {}),
+    },
+  };
+}

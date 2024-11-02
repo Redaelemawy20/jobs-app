@@ -9,28 +9,34 @@ interface Job {
   };
 }
 export interface JobResponse {
-  job: Job;
+  data: {
+    job: Job;
+  };
 }
 export interface JobsResponse {
-  jobs: Job[];
-  meta: {
-    next: number;
-    count: number;
+  data: {
+    jobs: Job[];
+    meta: {
+      next: number;
+      count: number;
+    };
   };
 }
 export interface SkillResponse {
-  skill: {
-    id: string;
-    type: string;
-    attributes: {
-      name: string;
+  data: {
+    skill: {
+      id: string;
       type: string;
-      importance: string;
-      level: string;
-    };
-    relationships: {
-      jobs: Array<{ id: string }>;
-      skills: Array<{ id: string }>;
+      attributes: {
+        name: string;
+        type: string;
+        importance: string;
+        level: string;
+      };
+      relationships: {
+        jobs: Array<{ id: string }>;
+        skills: Array<{ id: string }>;
+      };
     };
   };
 }

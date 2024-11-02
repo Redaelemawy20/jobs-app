@@ -1,0 +1,20 @@
+.skillsCardContainer {
+  padding: 1.5em;
+  background-color: #ddd;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  margin-bottom: 1em;
+}
+.skillsCardContainer .mainTitle {
+  text-decoration: underline;
+  font-weight: 500;
+  margin: 0;
+}
+.skillsCardContainer span {
+  font-weight: 700;
+}
+.statistics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
