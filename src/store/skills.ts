@@ -47,7 +47,7 @@ export const loadSkill =
     const skills = getState().skills;
 
     if (skills.byId[skillId]) return;
-    console.log('calling skills api');
+    // console.log('calling skills api');
     dispatch(
       apiCall({
         url: skillURL + skillId,

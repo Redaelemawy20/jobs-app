@@ -1,15 +1,12 @@
 import { Link } from 'react-router-dom';
 import styles from './jobcard.module.css';
-import { useAppDispatch, useAppSelector } from '../../../TS/hooks';
+import { useAppDispatch } from '../../../TS/hooks';
 import { useEffect } from 'react';
 import { loadSkills } from '../../../store/skills';
 import useOnScreen from '../../hooks/useOnScreen';
 import Skill from '../skill/skill';
-interface JobCardI {
-  jobId: string;
-}
-function JobCard({ jobId }: JobCardI) {
-  const job = useAppSelector((state) => state.jobs.byId[jobId]);
+import { JobWithId } from '../../../TS/store';
+function JobCard({ job }: { job: JobWithId }) {
   const dispatch = useAppDispatch();
   const jobSkills = job.skills;
   const [ref, isVisible] = useOnScreen<HTMLDivElement>({ threshold: 0.5 });

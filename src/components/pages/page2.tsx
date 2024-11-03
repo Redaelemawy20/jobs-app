@@ -1,5 +1,5 @@
 import React from 'react';
-import Search from '../ui/search/Search';
+import Search from '../ui/search/SearchBox';
 
 import Aside from '../ui/aside/Aside';
 import RelatedSkills from '../sections/RelatedSkills';

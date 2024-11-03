@@ -1,10 +1,4 @@
-import {
-  Action,
-  createSlice,
-  Dispatch,
-  GetState,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { Action, createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 import { apiCall } from './middleware/api';
 import { JobsState } from '../TS/store';
@@ -54,15 +48,14 @@ const jobSlice = createSlice({
   },
 });
 
-const { jobsReceived, jobsRequested, jobsRequestFailed } = jobSlice.actions;
+export const { jobsReceived, jobsRequested, jobsRequestFailed } =
+  jobSlice.actions;
 export default jobSlice.reducer;
 
 // Action Creators
 const jobsURL = '/jobs';
 export const loadJobs =
   () => (dispatch: Dispatch<Action>, getState: () => RootState) => {
-    console.log({ cursor: getState().jobs.cursor });
-
     dispatch(
       apiCall({
         url: jobsURL + `?cursor=${getState().jobs.cursor}`,
@@ -74,6 +67,20 @@ export const loadJobs =
   };
 
 // Selectors
+export const getJobs = createSelector(
+  [
+    (state: RootState) => state.jobs,
+    (state: RootState) => state.search.searchResults,
+    (state: RootState) => state.search.query,
+  ],
+  ({ byId, allIds }, searchResults, query) => {
+    if (query.length >= 3)
+      return searchResults.filter((job) =>
+        job.title.toLowerCase().includes(query.toLocaleLowerCase())
+      );
+    return allIds.map((id) => ({ id, ...byId[id] }));
+  }
+);
 export const hasNext = createSelector(
   (state: RootState) => state.jobs,
   (jobs) => jobs.totalJobs > jobs.allIds.length || jobs.totalJobs == -1
