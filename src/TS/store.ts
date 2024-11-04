@@ -3,11 +3,19 @@ import TitleCache from '../store/utils/TitleCache';
 export interface Job {
   title: string;
   skills: { id: string }[];
+  relatedJobs?: string[];
 }
 export type JobWithId = { id: string } & Job;
 export interface Skill {
   id: string;
   name: string;
+  type: string;
+  importance: string;
+  level: string;
+  relationships: {
+    jobs: Array<{ id: string }>;
+    skills: Array<{ id: string }>;
+  };
 }
 
 interface SliceState<T> {
@@ -17,7 +25,7 @@ interface SliceState<T> {
   allIds: string[];
 }
 type LoadingError = false | string;
-export interface JobsState extends SliceState<Job> {
+export interface JobsState extends SliceState<Job | 'loading' | 'error'> {
   loading: boolean;
   error: LoadingError;
   totalJobs: number;

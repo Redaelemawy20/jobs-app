@@ -22,6 +22,10 @@ const skillsSlice = createSlice({
       skills.byId[skill.id] = {
         id: skill.id,
         name: skill.attributes.name,
+        type: skill.attributes.type,
+        importance: skill.attributes.importance,
+        level: skill.attributes.level,
+        relationships: skill.relationships,
       };
       skills.allIds.push(skill.id);
     },

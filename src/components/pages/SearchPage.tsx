@@ -20,8 +20,8 @@ function SearchPage() {
       <Search />
       <div className="mainWrapper">
         <div className="common_grid">
-          <AllJobs jobs={jobs} title="Search Results" />
-          <Aside />
+          <AllJobs jobs={jobs as any} title="Search Results" />
+          {/* <Aside /> */}
         </div>
       </div>
       {query.length < 3 && jobs.length === 0 && (

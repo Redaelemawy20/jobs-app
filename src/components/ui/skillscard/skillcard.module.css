@@ -5,6 +5,7 @@
   flex-direction: column;
   gap: 2em;
   margin-bottom: 1em;
+  height: 200px;
 }
 .skillsCardContainer .mainTitle {
   text-decoration: underline;

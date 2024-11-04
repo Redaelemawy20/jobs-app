@@ -15,7 +15,7 @@ function HomePage() {
   return (
     <div>
       <Search />
-      <AllJobs jobs={jobs} title={'All Jobs'} />
+      <AllJobs jobs={jobs as any} title={'All Jobs'} />
       {loadMore && <LoadMore onLoad={onLoad} error={error} />}
     </div>
   );

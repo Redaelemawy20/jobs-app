@@ -25,7 +25,7 @@ function JobCard({ job }: { job: JobWithId }) {
           <Skill skillId={skill.id} key={skill.id} />
         ))}
       </div>
-      <Link className={styles.viewDetails} to="/">
+      <Link className={styles.viewDetails} to={`/job/${job.id}`}>
         View Job details
       </Link>
     </div>

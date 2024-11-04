@@ -1,23 +1,29 @@
-import styles from "./skillcard.module.css";
-function SkillsCard() {
+import { useAppDispatch, useAppSelector } from '../../../TS/hooks';
+import styles from './skillcard.module.css';
+import SkillInfo from './SkillInfo';
+import { setRelatedJobs } from '../../../store/jobs';
+interface SkillItemI {
+  jobId: string;
+  skillId: string;
+}
+/** skill container */
+function SkillsCard({ jobId, skillId }: SkillItemI) {
+  const skill = useAppSelector((state) => state.skills.byId[skillId]);
+  const dispatch = useAppDispatch();
+
+  if (!skill || skill === 'loading')
+    return (
+      <div className={styles.skillsCardContainer}>
+        <h2>Loading Skill</h2>
+      </div>
+    );
+  const loadSkillRelatedJobs = () => {
+    dispatch(setRelatedJobs({ jobId, relatedJobs: skill.relationships.jobs }));
+  };
+
   return (
     <div className={styles.skillsCardContainer}>
-      <h2 className={styles.mainTitle}>Operational and Control</h2>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt,</p>
-      <div className={styles.statistics}>
-        <p>
-          <span>Type: </span>
-          knowladge
-        </p>
-        <p>
-          <span>Importance: </span>
-          3.7
-        </p>
-        <p>
-          <span>Level: </span>
-          2.3
-        </p>
-      </div>
+      <SkillInfo skill={skill} onMount={loadSkillRelatedJobs} />
     </div>
   );
 }

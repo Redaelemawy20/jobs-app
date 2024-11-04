@@ -1,8 +1,8 @@
 import { Action, createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
 import { apiCall } from './middleware/api';
-import { JobsState } from '../TS/store';
-import { JobsResponse } from '../TS/api';
+import { Job, JobsState } from '../TS/store';
+import { JobResponse, JobsResponse } from '../TS/api';
 import { RootState } from './store';
 
 const intialState: JobsState = {
@@ -17,6 +17,7 @@ const jobSlice = createSlice({
   name: 'jobs',
   initialState: intialState,
   reducers: {
+    /* job list load handlers */
     jobsRequested: (jobs) => {
       jobs.loading = true;
       jobs.error = false;
@@ -45,11 +46,51 @@ const jobSlice = createSlice({
       jobs.loading = false;
       jobs.error = action.payload.message;
     },
+    /* single job load handlers */
+    jobRequested: (jobs, action: PayloadAction<{ jobId: string }>) => {
+      jobs.byId[action.payload.jobId] = 'loading';
+    },
+    jobReceived: (jobs, action: PayloadAction<JobResponse>) => {
+      const job = action.payload.data.job;
+      jobs.byId[job.id] = {
+        title: job.attributes.title,
+        skills: job.relationships.skills,
+      };
+    },
+    jobRequestFailed: (
+      jobs,
+      action: PayloadAction<{ jobId: string; message: string }>
+    ) => {
+      jobs.byId[action.payload.jobId] = 'error';
+    },
+
+    setRelatedJobs: (
+      jobs,
+      action: PayloadAction<{ jobId: string; relatedJobs: { id: string }[] }>
+    ) => {
+      let { jobId, relatedJobs } = action.payload;
+      let currentJob = jobs.byId[jobId] as Job;
+      if (currentJob) {
+        relatedJobs.forEach((job) => {
+          if (!currentJob.relatedJobs) currentJob.relatedJobs = [job.id];
+          else
+            !currentJob.relatedJobs.includes(job.id) &&
+              currentJob.relatedJobs?.push(job.id);
+        });
+      }
+    },
   },
 });
 
-export const { jobsReceived, jobsRequested, jobsRequestFailed } =
-  jobSlice.actions;
+export const {
+  jobsReceived,
+  jobsRequested,
+  jobsRequestFailed,
+  jobRequested,
+  jobReceived,
+  jobRequestFailed,
+  setRelatedJobs,
+} = jobSlice.actions;
 export default jobSlice.reducer;
 
 // Action Creators
@@ -66,6 +107,22 @@ export const loadJobs =
     );
   };
 
+const jobURL = '/job/';
+export const loadJob =
+  (jobId: string) =>
+  (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    const jobs = getState().jobs;
+    if (jobs.byId[jobId]) return;
+    dispatch(
+      apiCall({
+        url: jobURL + jobId,
+        onStartAction: { type: jobRequested.type, payload: { jobId } },
+        onSuccessAction: { type: jobReceived.type },
+        onFailedAction: { type: jobRequestFailed.type, payload: { jobId } },
+      })
+    );
+  };
+
 // Selectors
 export const getJobs = createSelector(
   [
@@ -78,7 +135,7 @@ export const getJobs = createSelector(
       return searchResults.filter((job) =>
         job.title.toLowerCase().includes(query.toLocaleLowerCase())
       );
-    return allIds.map((id) => ({ id, ...byId[id] }));
+    return allIds.map((id) => ({ id, ...(byId[id] as {}) }));
   }
 );
 export const hasNext = createSelector(
