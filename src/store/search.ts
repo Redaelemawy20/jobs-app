@@ -13,8 +13,10 @@ import { RootState } from './store';
 import { apiCall } from './middleware/api';
 import toQueryString from '../utils/toQueryString';
 
+const titleCache = new TitleCache(12);
+
 const initialState: SearchState = {
-  autocompleteResults: new TitleCache(12),
+  autocompleteResults: [],
   searchResults: [],
   history: [],
   query: '',
@@ -35,7 +37,7 @@ const searchSlice = createSlice({
 
       let results = payloadJobs.map((job) => {
         let title = job.attributes.title;
-        search.autocompleteResults.add(title);
+        titleCache.add(title);
         return {
           id: job.id,
           title,
@@ -43,6 +45,7 @@ const searchSlice = createSlice({
         };
       });
       search.searchResults = results;
+      search.autocompleteResults = titleCache.getTitles();
     },
     queryFailed: (search, action) => {
       search.isQuerying = false;
@@ -61,8 +64,9 @@ const searchSlice = createSlice({
       (search, action: PayloadAction<JobsResponse>) => {
         let payloadJobs = action.payload.data.jobs;
         payloadJobs.forEach((job) => {
-          search.autocompleteResults.add(job.attributes.title);
+          titleCache.add(job.attributes.title);
         });
+        search.autocompleteResults = titleCache.getTitles();
       }
     );
   },
@@ -111,7 +115,7 @@ export const storeSearchQuery =
   };
 // Selectors
 export const getAutocompleteList = createSelector(
-  (state: RootState) => state.search.autocompleteResults.getTitles(),
+  (state: RootState) => state.search.autocompleteResults,
   (_: RootState, query: string) => query,
   (autocompleteResults: string[], query: string) =>
     autocompleteResults.filter((title) => {

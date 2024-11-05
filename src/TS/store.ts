@@ -33,7 +33,7 @@ export interface JobsState extends SliceState<Job | 'loading' | 'error'> {
 }
 export interface SearchState {
   searchResults: (Job & { id: string })[];
-  autocompleteResults: TitleCache;
+  autocompleteResults: string[];
   history: string[];
   query: string;
   isQuerying: boolean;
