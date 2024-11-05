@@ -39,4 +39,4 @@ export interface SearchState {
   error: LoadingError;
 }
 
-export interface SkillsState extends SliceState<Skill | 'loading'> {}
+export interface SkillsState extends SliceState<Skill | 'loading' | 'error'> {}

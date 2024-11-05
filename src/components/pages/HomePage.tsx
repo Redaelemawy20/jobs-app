@@ -1,8 +1,8 @@
 import { errorLoadingJobs, getJobs, hasNext, loadJobs } from '../../store/jobs';
 import { useAppDispatch, useAppSelector } from '../../TS/hooks';
-import AllJobs from '../sections/AllJobs';
-import LoadMore from '../ui/LoadMore';
-import Search from '../ui/search/SearchBox';
+import AllJobs from '../ui/search-page/AllJobs';
+import LoadMore from '../ui/search-page/LoadMore';
+import Search from '../ui/search-page/search/SearchBox';
 
 function HomePage() {
   const loadMore = useAppSelector(hasNext);

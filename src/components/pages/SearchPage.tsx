@@ -1,10 +1,9 @@
-import Search from '../ui/search/SearchBox';
+import Search from '../ui/search-page/search/SearchBox';
 
-import AllJobs from '../sections/AllJobs';
-import Aside from '../ui/aside/Aside';
+import AllJobs from '../ui/search-page/AllJobs';
 import { useAppDispatch, useAppSelector } from '../../TS/hooks';
 import { errorLoadingJobs, getJobs, loadJobs } from '../../store/jobs';
-import LoadMore from '../ui/LoadMore';
+import LoadMore from '../ui/search-page/LoadMore';
 
 function SearchPage() {
   const jobs = useAppSelector(getJobs);

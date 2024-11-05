@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useOnScreen from '../hooks/useOnScreen';
+import useOnScreen from '../../hooks/useOnScreen';
 
 interface LoadMoreI {
   error: string;

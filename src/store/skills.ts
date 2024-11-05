@@ -33,9 +33,8 @@ const skillsSlice = createSlice({
   },
 });
 
-const { skillRequested, skillReceived, skillRequestFailed } =
-  skillsSlice.actions;
-
+const { skillRequested, skillRequestFailed } = skillsSlice.actions;
+export const { skillReceived } = skillsSlice.actions;
 export const loadSkills =
   (skills: { id: string }[]) =>
   (dispatch: AppDispatch, getState: () => RootState) => {

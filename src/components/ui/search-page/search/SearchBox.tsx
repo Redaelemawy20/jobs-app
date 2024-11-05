@@ -3,10 +3,10 @@ import {
   getAutocompleteList,
   searchJobs,
   setSearchQuery,
-} from '../../../store/search';
-import { useAppSelector, useAppDispatch } from '../../../TS/hooks';
+} from '../../../../store/search';
+import { useAppSelector, useAppDispatch } from '../../../../TS/hooks';
 import styles from './search.module.css';
-import { debounce } from '../../../utils/debounce';
+import { debounce } from '../../../../utils/debounce';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 function SearchBox() {

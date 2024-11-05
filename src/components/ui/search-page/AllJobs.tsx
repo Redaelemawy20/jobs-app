@@ -1,5 +1,5 @@
-import { JobWithId } from '../../TS/store';
-import JobCard from '../ui/jobcard/JobCard';
+import { JobWithId } from '../../../TS/store';
+import JobCard from './jobcard/JobCard';
 import styles from './alljobs.module.css';
 interface JobsContainer {
   title: string;

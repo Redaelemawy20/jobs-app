@@ -12,6 +12,9 @@
   font-weight: 500;
   margin: 0;
 }
+.mainTitle a {
+  color: black;
+}
 .skillsCardContainer span {
   font-weight: 700;
 }

@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 import styles from './jobcard.module.css';
-import { useAppDispatch } from '../../../TS/hooks';
+import { useAppDispatch } from '../../../../TS/hooks';
 import { useEffect } from 'react';
-import { loadSkills } from '../../../store/skills';
-import useOnScreen from '../../hooks/useOnScreen';
+import { loadSkills } from '../../../../store/skills';
+import useOnScreen from '../../../hooks/useOnScreen';
 import Skill from '../skill/skill';
-import { JobWithId } from '../../../TS/store';
+import { JobWithId } from '../../../../TS/store';
 function JobCard({ job }: { job: JobWithId }) {
   const dispatch = useAppDispatch();
   const jobSkills = job.skills;

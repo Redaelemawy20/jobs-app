@@ -3,14 +3,16 @@ import useOnScreen from '../hooks/useOnScreen';
 
 type WithOnScreenProps = {
   onVisible: () => void; // Action to run when the component appears
-  threshold: number;
+  threshold?: number;
 };
 
 // Higher-order component
 function withOnScreen<T>(WrappedComponent: React.ComponentType<T>) {
   return function (props: WithOnScreenProps & T) {
     const { onVisible, threshold, ...rest } = props;
-    const [ref, isVisible] = useOnScreen<HTMLDivElement>({ threshold });
+    const [ref, isVisible] = useOnScreen<HTMLDivElement>({
+      threshold: threshold ?? 0.5,
+    });
 
     useEffect(() => {
       if (isVisible) {
