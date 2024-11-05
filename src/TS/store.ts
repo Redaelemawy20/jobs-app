@@ -34,6 +34,7 @@ export interface JobsState extends SliceState<Job | 'loading' | 'error'> {
 export interface SearchState {
   searchResults: (Job & { id: string })[];
   autocompleteResults: TitleCache;
+  history: string[];
   query: string;
   isQuerying: boolean;
   error: LoadingError;

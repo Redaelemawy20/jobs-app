@@ -11,10 +11,12 @@ import { JobsResponse } from '../TS/api';
 import TitleCache from './utils/TitleCache';
 import { RootState } from './store';
 import { apiCall } from './middleware/api';
+import toQueryString from '../utils/toQueryString';
 
 const initialState: SearchState = {
   autocompleteResults: new TitleCache(12),
   searchResults: [],
+  history: [],
   query: '',
   error: false,
   isQuerying: false,
@@ -47,9 +49,10 @@ const searchSlice = createSlice({
       search.error = 'error';
     },
     setSearchQuery: (search, action: PayloadAction<string>) => {
-      console.log(action.payload);
-
       search.query = action.payload;
+    },
+    setHistory: (searh, action: PayloadAction<string[]>) => {
+      searh.history = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -64,19 +67,23 @@ const searchSlice = createSlice({
     );
   },
 });
-const { queryStarted, resultReceived, queryFailed } = searchSlice.actions;
+const { queryStarted, resultReceived, queryFailed, setHistory } =
+  searchSlice.actions;
 export const { setSearchQuery } = searchSlice.actions;
 export default searchSlice.reducer;
 
 // Action Creators
 const queryURL = '/jobs/search';
 export const searchJobs =
-  (query: string) =>
-  (dispatch: Dispatch<Action>, getState: () => RootState) => {
-    const params = new URLSearchParams({ query: query.toLocaleLowerCase() });
+  () => (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    const query = getState().search.query;
+    if (query.length <= 3) return;
+    const queryString = toQueryString(
+      getState().search.query.toLocaleLowerCase()
+    );
     dispatch(
       apiCall({
-        url: queryURL + `?${params.toString()}`,
+        url: queryURL + `?${queryString}`,
         onStartAction: { type: queryStarted.type },
         onSuccessAction: { type: resultReceived.type },
         onFailedAction: { type: queryFailed.type },
@@ -84,6 +91,24 @@ export const searchJobs =
     );
   };
 
+export const loadSearchHistory =
+  () => (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    if (!localStorage.getItem('history'))
+      localStorage.setItem('history', JSON.stringify([]));
+    const history = localStorage.getItem('history');
+    dispatch(setHistory(history ? JSON.parse(history) : []));
+  };
+
+export const storeSearchQuery =
+  (query: string) =>
+  (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    const history = [...getState().search.history];
+    if (!history.includes(query)) {
+      history.push(query);
+      localStorage.setItem('history', JSON.stringify(history));
+      dispatch(setHistory(history));
+    }
+  };
 // Selectors
 export const getAutocompleteList = createSelector(
   (state: RootState) => state.search.autocompleteResults.getTitles(),
