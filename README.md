@@ -32,11 +32,11 @@ A React application for job listings that includes features like job search, job
       cd job-listing-app
       npm install
       ```
-## Running the App
+## Running the App:
    ```bash
       npm start
-      ``` 
-## Running Tests
+   ```  
+### Running Tests
    ```bash
-      npm 
+      npm test
       ```
